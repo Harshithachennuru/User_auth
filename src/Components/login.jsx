@@ -18,13 +18,11 @@ const Login = () => {
     .then((res)=> res.text())
     .then((data)=>{
       alert(data);
-      localStorage.setItem("token",data.token)
       if(data === "logged in successfully"){
          navigate("/home", {
           state: { email: email }
         });
       }
-      
     })
     .catch((err)=>{
       console.log(err);

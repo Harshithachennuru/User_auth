@@ -1,12 +1,10 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const jwt =  require('jsonwebtoken')
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-const jwt_secret = "thisisasecretkey"
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
@@ -59,17 +57,13 @@ app.post('/login',(req,res)=>{
     db.query(`select * from users where email = ? and password = ?`,[email,password],(err,result)=>{
         if(err){
             console.error('Error querying the database:', err);
-            res.status(500).send.json({
-                message:"database error"
-            });
+            res.send('Error querying the database');
             return;
         }
         if(result.length > 0){
-            const user = result[0];
-            const token = jwt.sign({email:user.email,id:user.id},jwt_secret,{expiresIn:"1h"});
-            res.status(200).send({message:'user successfully loggedIn',token:token});
+                res.send("logged in successfully");
         }else{
-            res.status(400).send("invalid credentials");
+            res.send("invalid credentials");
         }
     })
 })
