@@ -4,6 +4,7 @@ import { useState } from "react"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user_role,setuser_role] = useState("");
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +13,8 @@ const Login = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,
-        password: password
+        password: password,
+        user_role : user_role
       })
     })
     .then((res)=> res.text())
@@ -37,7 +39,12 @@ const Login = () => {
         <input type="email" placeholder='Email' onChange={(e)=>setEmail(e.target.value)}/>
 
         <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)}/>
+         <select value={user_role} onChange={(e) => setuser_role(e.target.value)}>
 
+          <option value="">Select your role</option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+        </select>
         <i>
           Don't have an account?
           <Link to="/signup"> Signup</Link>

@@ -3,10 +3,14 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken')
+
 const app = express();
 app.use(cors({origin:'*'}));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
+
+const jwt_token_secret = "thisisasecretsignature"
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
@@ -33,6 +37,9 @@ app.get('/', (req, res) => {
 app.post('/signup',async(req,res)=>{
     let email = req.body.email;
     let password = req.body.password
+    let user_role = req.body.user_role
+    console.log(req.body);
+    console.log(user_role);
     console.log(password);
     const hashedPassword = await bcrypt.hash(password,10)
 
@@ -40,7 +47,7 @@ app.post('/signup',async(req,res)=>{
     console.log(email)
     console.log(hashedPassword)
     if(password == confirmpassword){
-        db.query(`insert into users(email,hashedpassword) values(?,?)`,[email,hashedPassword],(err,result)=>{
+        db.query(`insert into users(email,hashedpassword,user_role) values(?,?,?)`,[email,hashedPassword,user_role],(err,result)=>{
         if(err){
             console.error('Error inserting data into the database:', err);
             res.send('Error inserting data into the database');
@@ -51,30 +58,11 @@ app.post('/signup',async(req,res)=>{
     } 
     else{
         res.send("Password does not match");
-    } 
-
-    
+    }    
 })
 
-// app.post('/login',(req,res)=>{
-//     let email = req.body.email;
-//     let password = req.body.password;
-//     db.query(`select * from users where email = ? and password = ?`,[email,password],(err,result)=>{
-//         if(err){
-//             console.error('Error querying the database:', err);
-//             res.send('Error querying the database');
-//             return;
-//         }
-//         if(result.length > 0){
-//                 res.send("logged in successfully");
-//         }else{
-//             res.send("invalid credentials");
-//         }
-//     })
-// })
-
 app.post('/login',(req,res)=>{
-    const {email,password} = req.body;
+    const {email,password, user_role} = req.body;
     db.query(`select * from users where email = ? `,[email],async(err,result)=>{
         if(err){
             console.error('Error querying the database:', err);
@@ -87,8 +75,15 @@ app.post('/login',(req,res)=>{
         }
         const user = result[0];
         const isPasswordvalid = await bcrypt.compare(password,user.hashedpassword);
-        if(isPasswordvalid){
+        if(isPasswordvalid && user.user_role== user_role){
+            const user_payload = {
+                user_email: email,
+                user_role : user_role
+            }
+            const token = jwt.sign(user_payload,jwt_token_secret,{expiresIn:'1h'})
+            console.log(token)
             res.send("logged in successfully")
+            
         }
         else{
             res.send("invalid credentials")

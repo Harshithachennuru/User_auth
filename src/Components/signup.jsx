@@ -7,16 +7,19 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmpassword, setConfirmpassword] = useState("");
+    const [user_role, setuser_role] = useState("");
     const navigate = useNavigate();
     function handleSubmit(e){
         e.preventDefault();
+        
         fetch("http://localhost:3000/signup",{
             method:"POST",
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({
                 email:email,
                 password:password,
-                confirmpassword:confirmpassword
+                confirmpassword:confirmpassword,
+                user_role:user_role
             })
         })
         .then((res) =>res.text())
@@ -41,6 +44,14 @@ const Signup = () => {
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
         <input type="password" placeholder="Confirm Password" value={confirmpassword} onChange={(e) => setConfirmpassword(e.target.value)} />
+
+        <select value={user_role} onChange={(e) => setuser_role(e.target.value)}>
+
+          <option value="">Select your role</option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+
+        </select>
 
         <i>
           Already have an account?
