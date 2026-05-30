@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react"
 const Login = () => {
@@ -6,6 +6,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [user_role,setuser_role] = useState("");
   const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch("http://localhost:3000/login", {
@@ -17,19 +18,26 @@ const Login = () => {
         user_role : user_role
       })
     })
-    .then((res)=> res.text())
+    .then((res)=> res.json())
     .then((data)=>{
-      alert(data);
-      if(data === "logged in successfully"){
-         navigate("/home", {
-          state: { email: email }
-        });
+      if(data.role === "Admin"){
+        alert("Admin logged in successfully");
+        navigate("/AdminDashboard",{
+          state:{email:email}
+        })
+      }
+      else{
+        alert("user logged in successfully")
+        navigate("/UserDashboard",{
+          state:{email:email}
+        })
       }
     })
     .catch((err)=>{
       console.log(err);
     })
   };
+
   return (
     <div className="container">
 

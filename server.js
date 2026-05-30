@@ -82,7 +82,11 @@ app.post('/login',(req,res)=>{
             }
             const token = jwt.sign(user_payload,jwt_token_secret,{expiresIn:'1h'})
             console.log(token)
-            res.send("logged in successfully")
+            res.json({
+                message: "logged in successfully",
+                role: user.user_role,
+                token: token
+            });
             
         }
         else{

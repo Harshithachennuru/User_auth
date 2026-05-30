@@ -5,7 +5,7 @@ const Home = () => {
     const email = location.state?.email;
 
     return (
-        <h1>Hello <br />{email}</h1>
+        <h1>Hiiiiiiiii <br />{email}</h1>
     );
 };
 
