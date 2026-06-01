@@ -25,7 +25,7 @@ const Signup = () => {
         .then((res) =>res.text())
         .then((data) => {
             alert(data);
-            if(data==="User registered successfully"){ 
+            if(data==='registered successfully'){ 
                 navigate("/");
             }            
         })

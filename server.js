@@ -53,7 +53,7 @@ app.post('/signup',async(req,res)=>{
             res.send('Error inserting data into the database');
             return;
         }
-        res.send('User registered successfully');
+        res.send('registered successfully');
         })
     } 
     else{
